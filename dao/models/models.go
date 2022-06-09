@@ -18,5 +18,5 @@ type Todo struct {
 	ExpiryTime      time.Time `gorm:"not null"`
 	Title           string
 	Description     string
-	PercentComplete int32     `gorm:"check:0-100"`
+	PercentComplete int32 `gorm:"check:0-100"`
 }
