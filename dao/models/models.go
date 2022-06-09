@@ -16,7 +16,7 @@ type Model struct {
 type Todo struct {
 	Base            Model
 	ExpiryTime      time.Time `gorm:"not null"`
-	Title           string    ``
-	Description     string    ``
+	Title           string
+	Description     string
 	PercentComplete int32     `gorm:"check:0-100"`
 }
