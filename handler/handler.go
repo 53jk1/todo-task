@@ -18,10 +18,16 @@ func New() *Service {
 }
 
 func (s *Service) CreateTodo(ctx context.Context, req *pb.CreateTodoRequest) (*pb.CreateTodoResponse, error) {
-	log.Info("CreateTodo")
 	return &pb.CreateTodoResponse{
 		Todo: &pb.Todo{
-			Id: "dupa8",
+			Id: req.Todo.Id,
 		},
+	}, nil
+}
+
+func (s *Service) GetAllTodos(ctx context.Context, req *pb.GetAllTodosRequest) (*pb.GetAllTodosResponse, error) {
+	log.Debug().Msg("GetTodo")
+	return &pb.GetAllTodosResponse{
+		Todos: []*pb.Todo{},
 	}, nil
 }

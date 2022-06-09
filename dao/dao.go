@@ -6,4 +6,5 @@ import (
 
 type Todo interface {
 	Create(models.Todo) (*models.Todo, error)
+	// GetAllTodos() ([]models.Todo, error)
 }

@@ -15,3 +15,11 @@ func (t *Todo) Create(todo models.Todo) (*models.Todo, error) {
 	}
 	return &todo, nil
 }
+
+func (t *Todo) GetAll() ([]models.Todo, error) {
+	var todos []models.Todo
+	if err := t.Db.Find(&todos).Error; err != nil {
+		return nil, err
+	}
+	return todos, nil
+}

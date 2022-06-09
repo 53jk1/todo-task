@@ -6,17 +6,14 @@ import (
 	"os"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"google.golang.org/grpc/credentials/insecure"
 
 	db "github.com/53jk1/todo-task/dao/db"
 
 	"github.com/53jk1/todo-task/gateway"
 	"github.com/53jk1/todo-task/handler"
-	"github.com/53jk1/todo-task/insecure"
 	pb "github.com/53jk1/todo-task/proto"
 )
 
@@ -31,19 +28,20 @@ func main() {
 		log.Fatalln("Failed to listen:", err)
 	}
 
-	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable"
+	// dsn := "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable"
+	dsn := os.Getenv("DSN")
 	gdb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalln("Failed to connect to database:", err)
+	}
 
 	handler := &handler.Service{
 		UnimplementedTodoServiceServer: &pb.UnimplementedTodoServiceServer{},
 		Todo:                           &db.Todo{Db: gdb},
 	}
 
-	s := grpc.NewServer(
-		// TODO: Replace with your own certificate!
-		// grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
-		[]grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	)
+	s := grpc.NewServer()
+
 	pb.RegisterTodoServiceServer(s, handler)
 
 	// Serve gRPC Server

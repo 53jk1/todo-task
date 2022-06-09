@@ -2,7 +2,6 @@ package gateway
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"io/fs"
 	"io/ioutil"
@@ -11,12 +10,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/grpclog"
 
-	"github.com/53jk1/todo-task/insecure"
 	pbExample "github.com/53jk1/todo-task/proto"
 	"github.com/53jk1/todo-task/third_party"
 )
@@ -44,7 +42,7 @@ func Run(dialAddr string) error {
 	conn, err := grpc.DialContext(
 		context.Background(),
 		dialAddr,
-		grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(insecure.CertPool, "")),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock(),
 	)
 	if err != nil {
@@ -80,9 +78,9 @@ func Run(dialAddr string) error {
 		return fmt.Errorf("serving gRPC-Gateway server: %w", gwServer.ListenAndServe())
 	}
 
-	gwServer.TLSConfig = &tls.Config{
-		Certificates: []tls.Certificate{insecure.Cert},
-	}
+	// gwServer.TLSConfig = &tls.Config{
+	// 	Certificates: []tls.Certificate{*third_party.TLSCert},
+	// }
 	log.Info("Serving gRPC-Gateway and OpenAPI Documentation on https://", gatewayAddr)
 	return fmt.Errorf("serving gRPC-Gateway server: %w", gwServer.ListenAndServeTLS("", ""))
 }
