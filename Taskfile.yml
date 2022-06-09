@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+  test:
+    desc: "Runs unit tests"
+    cmd:
+      - go test -coverprofile=profile.cov -v ./... --tags "json1"
+      - go tool cover -func=profile.cov | grep total | awk '{print $3}' | tee coverage.log
+      - rm -fr coverage.log profile.cov
+
+  coverage:
+    desc: "Check coverage of code"
+    cmds:
+      - LOG_LEVEL=error ENV=test SELECTOR=static TRANSPORT=memory BROKER=memory go test -coverprofile=profile.cov -v ./... --tags "json1"
+      - go tool cover -html=profile.cov
+      - rm -fr coverage.log profile.cov
+
