@@ -12,7 +12,7 @@ import (
 	"github.com/53jk1/todo-task/gateway"
 	"github.com/53jk1/todo-task/insecure"
 	pbExample "github.com/53jk1/todo-task/proto"
-	"github.com/53kj1/todo-task/server"
+	"github.com/53jk1/todo-task/handler"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 		// TODO: Replace with your own certificate!
 		grpc.Creds(credentials.NewServerTLSFromCert(&insecure.Cert)),
 	)
-	pbExample.RegisterUserServiceServer(s, server.New())
+	pbExample.RegisterTodoServiceServer(s, handler.New())
 
 	// Serve gRPC Server
 	log.Info("Serving gRPC on https://", addr)

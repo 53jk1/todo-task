@@ -14,4 +14,10 @@ tasks:
       - LOG_LEVEL=error ENV=test SELECTOR=static TRANSPORT=memory BROKER=memory go test -coverprofile=profile.cov -v ./... --tags "json1"
       - go tool cover -html=profile.cov
       - rm -fr coverage.log profile.cov
+  
+  proto:
+    desc: "Generates protobuf gateway files."
+    cmds:
+      - protoc -I $GOPATH/src -I $GOPATH/src/github.com/googleapis/googleapis -I $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway --go_out $GOPATH/src --go-grpc_out $GOPATH/src $GOPATH/src/github.com/53jk1/todo-task/proto/*.proto
+      - protoc -I $GOPATH/src -I $GOPATH/include -I $GOPATH/src/github.com/googleapis/googleapis -I $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway --grpc-gateway_out $GOPATH/src --grpc-gateway_opt logtostderr=true --grpc-gateway_opt generate_unbound_methods=true --grpc-gateway_opt standalone=false $GOPATH/src/github.com/53jk1/todo-task/proto/*.proto
 

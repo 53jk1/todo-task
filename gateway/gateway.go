@@ -52,7 +52,7 @@ func Run(dialAddr string) error {
 	}
 
 	gwmux := runtime.NewServeMux()
-	err = pbExample.RegisterUserServiceHandler(context.Background(), gwmux, conn)
+	err = pbExample.RegisterTodoServiceHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}

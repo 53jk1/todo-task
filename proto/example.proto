@@ -4,10 +4,11 @@ package example;
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
-option go_package = "github.com/johanbrandhorst/grpc-gateway-boilerplate/proto;example";
+option go_package = "github.com/53jk1/todo-task/proto;example";
 
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
@@ -15,42 +16,150 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     version: "1.0";
   };
   external_docs: {
-    url: "https://github.com/johanbrandhorst/grpc-gateway-boilerplate";
+    url: "https://github.com/53jk1/todo-task";
     description: "gRPC-gateway boilerplate repository";
   }
   schemes: HTTPS;
 };
 
-service UserService {
-  rpc AddUser(AddUserRequest) returns (User) {
-    option (google.api.http) = {
-      // Route to this method from POST requests to /api/v1/users
-      post: "/api/v1/users"
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Add a user"
-      description: "Add a user to the server."
-      tags: "Users"
-    };
-  }
-  rpc ListUsers(ListUsersRequest) returns (stream User) {
-    option (google.api.http) = {
-      // Route to this method from GET requests to /api/v1/users
-      get: "/api/v1/users"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "List users"
-      description: "List all users on the server."
-      tags: "Users"
-    };
-  }
+service TodoService {
+
+    rpc GetAllTodos(GetAllTodosRequest) returns (GetAllTodosResponse) {
+        option (google.api.http) = {
+            get: "/todos";
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get all todos";
+        };
+    }
+    rpc GetSpecificTodo(GetSpecificTodoRequest) returns (GetSpecificTodoResponse) {
+        option (google.api.http) = {
+            get: "/todos/{id}";
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get a specific todo";
+        };
+    }
+    rpc GetIncomingTodo(GetIncomingTodoRequest) returns (GetIncomingTodoResponse) {
+        option (google.api.http) = {
+            get: "/todos/incoming";
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Get all incoming todos";
+        };
+    }
+    rpc CreateTodo(CreateTodoRequest) returns (CreateTodoResponse) {
+        option (google.api.http) = {
+            post: "/todos";
+            body: "*";
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Create a new todo";
+        };
+    }
+    rpc UpdateTodo(UpdateTodoRequest) returns (UpdateTodoResponse) {
+        option (google.api.http) = {
+            put: "/todos/{todo.id}";
+            body: "*";
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Update a todo";
+        };
+    }
+    rpc SetTodoPercentComplete(SetTodoPercentCompleteRequest) returns (SetTodoPercentCompleteResponse) {
+        option (google.api.http) = {
+            put: "/todos/{id}/percentComplete";
+            body: "*";
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Set the percent complete of a todo";
+        };
+    }
+    rpc DeleteTodo(DeleteTodoRequest) returns (DeleteTodoResponse) {
+        option (google.api.http) = {
+            delete: "/todos/{id}";
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Delete a todo";
+        };
+    }
+    rpc MarkTodoAsComplete(MarkTodoAsCompleteRequest) returns (MarkTodoAsCompleteResponse) {
+        option (google.api.http) = {
+            put: "/todos/{id}/complete";
+            body: "*";
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            summary: "Mark a todo as complete";
+        };
+    }
 }
 
-message AddUserRequest {}
+message Todo {
+    string id = 1;
+    google.protobuf.Timestamp expiryTime = 2;
+    string title = 3;
+    string description = 4;
+    int32 percentComplete = 5;
+}
 
-message ListUsersRequest {}
+message GetAllTodosRequest {
+}
 
-message User {
-  string id = 1;
+message GetAllTodosResponse {
+    repeated Todo todos = 1;
+}
+
+message GetSpecificTodoRequest {
+    string id = 1;
+}
+
+message GetSpecificTodoResponse {
+    Todo todo = 1;
+}
+
+message GetIncomingTodoRequest {
+}
+
+message GetIncomingTodoResponse {
+    repeated Todo todos = 1;
+}
+
+message CreateTodoRequest {
+    Todo todo = 1;
+}
+
+message CreateTodoResponse {
+    Todo todo = 1;
+}
+
+message UpdateTodoRequest {
+    Todo todo = 1;
+}
+
+message UpdateTodoResponse {
+    Todo todo = 1;
+}
+
+message SetTodoPercentCompleteRequest {
+    string id = 1;
+    int32 percentComplete = 2;
+}
+
+message SetTodoPercentCompleteResponse {
+    Todo todo = 1;
+}
+
+message DeleteTodoRequest {
+    string id = 1;
+}
+
+message DeleteTodoResponse {
+}
+
+message MarkTodoAsCompleteRequest {
+    string id = 1;
+}
+
+message MarkTodoAsCompleteResponse {
+    Todo todo = 1;
 }
